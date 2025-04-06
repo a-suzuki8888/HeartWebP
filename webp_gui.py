@@ -6,6 +6,7 @@ from tkinter import filedialog, messagebox
 def convert_images_to_webp(folder_path, quality=80, alpha_q=100, method=6, multithread=True):
     supported_exts = ('.jpg', '.jpeg', '.png')
     converted = 0
+    cwebp_path = "/opt/homebrew/bin/cwebp"  # フルパスを指定
 
     for root, dirs, files in os.walk(folder_path):
         for file in files:
@@ -14,7 +15,7 @@ def convert_images_to_webp(folder_path, quality=80, alpha_q=100, method=6, multi
                 output_path = os.path.splitext(input_path)[0] + '.webp'
 
                 command = [
-                    'cwebp',
+                    cwebp_path,
                     '-q', str(quality),
                     '-alpha_q', str(alpha_q),
                     '-m', str(method)
@@ -51,32 +52,29 @@ def start_conversion():
 root = tk.Tk()
 root.title("WebP変換ツール - Heart Stack")
 
-# フォルダ選択
 tk.Label(root, text="変換フォルダ:").grid(row=0, column=0, sticky='e')
 entry_folder = tk.Entry(root, width=40)
 entry_folder.grid(row=0, column=1, padx=5, pady=5)
 tk.Button(root, text="選択", command=select_folder).grid(row=0, column=2, padx=5)
 
-# 設定
-tk.Label(root, text="品質 -q (推奨80〜90):").grid(row=1, column=0, sticky='e')
+tk.Label(root, text="品質 -q（推奨80〜90）:").grid(row=1, column=0, sticky='e')
 entry_quality = tk.Entry(root)
 entry_quality.insert(0, "80")
 entry_quality.grid(row=1, column=1, pady=2, sticky='w')
 
-tk.Label(root, text="透過品質 -alpha_q (推奨100):").grid(row=2, column=0, sticky='e')
+tk.Label(root, text="透過品質 -alpha_q（推奨100）:").grid(row=2, column=0, sticky='e')
 entry_alpha_q = tk.Entry(root)
 entry_alpha_q.insert(0, "100")
 entry_alpha_q.grid(row=2, column=1, pady=2, sticky='w')
 
-tk.Label(root, text="圧縮メソッド -m (0〜6):").grid(row=3, column=0, sticky='e')
+tk.Label(root, text="圧縮メソッド -m（0〜6）:").grid(row=3, column=0, sticky='e')
 entry_method = tk.Entry(root)
 entry_method.insert(0, "6")
 entry_method.grid(row=3, column=1, pady=2, sticky='w')
 
 var_multithread = tk.BooleanVar(value=True)
-tk.Checkbutton(root, text="マルチスレッド処理 (-mt)", variable=var_multithread).grid(row=4, columnspan=2, sticky='w', padx=10)
+tk.Checkbutton(root, text="マルチスレッド処理（-mt）", variable=var_multithread).grid(row=4, columnspan=2, sticky='w', padx=10)
 
-# ボタン
 tk.Button(root, text="WebPに変換", command=start_conversion, bg="#5bc0de").grid(row=5, columnspan=3, pady=10)
 
 root.mainloop()
