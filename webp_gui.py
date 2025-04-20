@@ -53,7 +53,7 @@ def convert_images_to_webp_from_list(file_list, output_folder, backup_folder=Non
 # === ドラッグ&ドロップ対応 ===
 def drop(event):
     dropped_files = root.tk.splitlist(event.data)
-    
+
     # 対象画像のみ抽出（安全のため）
     image_files = [
         f for f in dropped_files
@@ -195,22 +195,39 @@ tk.Checkbutton(main_frame, text="Finderで開く", variable=var_finder, bg="#ffe
 # === 実行ボタン ===
 tk.Button(main_frame, text="WebPに変換", command=start_conversion, bg="#ff69b4", fg="white", font=('Helvetica', 12, 'bold')).grid(row=8, columnspan=3, pady=10)
 
+# ドラッグ&ドロップの案内テキスト
+tk.Label(
+    main_frame,
+    text="↓ この下の領域にドラッグ＆ドロップしてください（マルチスレッド処理は無効になります）↓",
+    font=('Helvetica', 11),
+    fg="#800000"
+).grid(row=9, column=0, columnspan=3, pady=(10, 0))
+
 # === ドロップエリア ===
-drop_frame = tk.Frame(main_frame, bg="#ffc0cb", relief="ridge", bd=2)
-drop_frame.grid(row=9, column=0, columnspan=3, sticky="nsew", pady=20, padx=10)
-main_frame.grid_rowconfigure(9, weight=1)
+drop_frame = tk.Frame(main_frame)
+drop_frame.grid(row=10, column=0, columnspan=3, sticky="nsew", pady=5)
+main_frame.grid_rowconfigure(10, weight=1)
 
 drop_label = tk.Label(
     drop_frame,
-    text="🎀 ここに画像をドラッグ＆ドロップ！ 🎀\n\n※ドラッグ＆ドロップ時はマルチスレッド処理を行いません",
-    bg="#ffc0cb",
-    fg="#800000",
-    font=('Helvetica', 14, 'bold'),
+    text="🎀 ここに画像をドラッグ＆ドロップ！ 🎀",
     height=8
 )
 drop_label.pack(fill="both", expand=True)
 drop_label.drop_target_register(DND_FILES)
 drop_label.dnd_bind('<<Drop>>', drop)
+
+# ドロップ時の視覚的フィードバック
+def on_drag_enter(event):
+    drop_frame.configure(bg="#ff69b4")
+    drop_label.configure(bg="#ff69b4")
+
+def on_drag_leave(event):
+    drop_frame.configure(bg="#ffc0cb")
+    drop_label.configure(bg="#ffc0cb")
+
+drop_label.dnd_bind('<<DragEnter>>', on_drag_enter)
+drop_label.dnd_bind('<<DragLeave>>', on_drag_leave)
 
 root.mainloop()
 
